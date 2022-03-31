@@ -1,14 +1,17 @@
 import hashlib
+import hmac
 from collections import OrderedDict
 
 class azulAuthHash():
+
+    _AuthKey = 'asdhakjshdkjasdasmndajksdkjaskldga8odya9d8yoasyd98asdyaisdhoaisyd0a8sydoashd8oasydoiahdpiashd09ayusidhaos8dy0a8dya08syd0a8ssdsax'
 
     def _generate_hash(self, args):
 
         args_string = ''.join(str(v) for v in args.values())
         # args_string = ''.join(map(str, args.values()))  # this way works too
-        utf_string = args_string.encode('UTF-16LE')
-        hash_sha512_string = hashlib.sha512(utf_string).hexdigest()
+
+        hash_sha512_string = hmac.new(bytes(self._AuthKey, 'utf8'), bytes(args_string, 'utf8'), hashlib.sha512).hexdigest()
 
         ''''
         Azul documentation as December 2020, says that we need do this:
@@ -22,24 +25,24 @@ class azulAuthHash():
     def _getAzulFormFields(self):
 
         return OrderedDict([
-                            ('MerchantId', str('455593373663')),
-                            ('MerchantName', 'Fast Food Services'),
-                            ('MerchantType', 'Fast Food Industry'),
+                            ('MerchantId', str('39038540035')),
+                            ('MerchantName', 'Azul Test'),
+                            ('MerchantType', 'E-Commerce'),
                             ('CurrencyCode', '$'),
-                            ('OrderNumber', '001234'),
-                            ('Amount', str('100000')),
-                            ('ITBIS', str('18000')),
-                            ('ApprovedUrl', 'softnet.do/success'),
-                            ('DeclinedUrl', 'softnet.do/declined'),
-                            ('CancelUrl', 'softnet.do/canceled'),
-                            ('UseCustomField1', str('1')),
-                            ('CustomField1Label', 'Foo'),
-                            ('CustomField1Value', 'Bar'),
+                            ('OrderNumber', '001'),
+                            ('Amount', str('2000')),
+                            ('ITBIS', str('1000')),
+                            ('ApprovedUrl', 'https://azul.com.do'),
+                            ('DeclinedUrl', 'https://azul.com.do'),
+                            ('CancelUrl', 'https://azul.com.do'),
+                            ('UseCustomField1', str('0')),
+                            ('CustomField1Label', ''),
+                            ('CustomField1Value', ''),
                             ('UseCustomField2', str('0')),
                             ('CustomField2Label', ''),
                             ('CustomField2Value', ''),
-                            ('AuthKey', 'asdhakjshdkjasdasmndajksdkjaskldga8odya9d8yoasyd98asdyaisdhoaisyd0a8sydoashd8oasydoiahdpiashd09ayusidhaos8dy0a8dya08syd0a8ssdsax') # ***** WARNING! *****, DON'T SEND THIS FIELD IN THE POST FORM IN CLIENT SIDE. Tips: unset($args['AuthKey'])
-                            ])        
+                            ('AuthKey', self._AuthKey) # ***** WARNING! *****, DON'T SEND THIS FIELD IN THE POST FORM IN CLIENT SIDE. Tips: unset($args['AuthKey'])
+                            ])
 
 
 azulAuthHash = azulAuthHash()
